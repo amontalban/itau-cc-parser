@@ -1,0 +1,6 @@
+argparse
+csv
+os
+re
+sys
+pdfminer.six==20201018
