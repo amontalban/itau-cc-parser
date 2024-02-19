@@ -2,6 +2,8 @@
 
 Este script Python extrae las compras de un extracto de tarjeta VISA del banco Itaú en formato PDF y las exporta a un archivo en formato CSV.
 
+En los registros que se exportan tambien se incluyen los cargos de seguro de vida sobre el saldo y los recargos por consumos en el exterior.
+
 ## Requisitos
 
 Se necesita Python 3.6 o superior. Todos los requisitos de bibliotecas de Python están en el archivo `requirements.txt`.
