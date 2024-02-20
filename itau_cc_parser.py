@@ -4,7 +4,7 @@ import argparse, csv, os, pdfquery, re, sys
 from pdfminer.high_level import extract_text
 
 POSICION_CARGOS_EXTERIOR = "502.230,619.642,519.030,626.642"
-POSICION_FECHA_DE_EMISION = "493.500,724.060,541.500,734.060"
+POSICION_FECHA_DE_EMISION = ["493.500,724.060,541.500,734.060", "490.750,724.920,538.750,734.920"]
 
 # Configurar argparse
 parser = argparse.ArgumentParser(description="Extraer compras del extracto de tarjeta VISA del banco Itaú en formato PDF a formato CSV.")
@@ -62,12 +62,15 @@ for file in files:
             # Extraemos la fecha de emision para ser utilizada para las entradas
             # de seguro de vida sobre saldo y recargo por consumos en el exterior
             pdf = pdfquery.PDFQuery(file.name)
-            data = pdf.extract([
-                ('with_parent', 'LTPage[pageid="1"]'),
-                ('with_formatter', 'text'),
-                ('fecha_de_emision', f'LTTextBoxHorizontal:in_bbox("{POSICION_FECHA_DE_EMISION}")')
-                ])
-            fecha_de_emision = data["fecha_de_emision"]
+            for position in POSICION_FECHA_DE_EMISION:
+                data = pdf.extract([
+                    ('with_parent', 'LTPage[pageid="1"]'),
+                    ('with_formatter', 'text'),
+                    ('fecha_de_emision', f'LTTextBoxHorizontal:in_bbox("{position}")')
+                    ])
+                if re.match('^[0-9][0-9]/[0-9][0-9]/[0-9][0-9]$', data["fecha_de_emision"]):
+                    fecha_de_emision = data["fecha_de_emision"]
+                    break
 
             # Escribir los registros que matchean con las expresiones regulares definidas en regexList
             for regex in regexList:
